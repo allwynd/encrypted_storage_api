@@ -5,12 +5,12 @@ const { decryptJson } = require("../lib/crypto");
 app.http("retrieve", {
   methods: ["GET"],
   authLevel: "function",
-  route: "retrieve/{name}",
+  route: "items/{name}",
   handler: async (request, context) => {
     const name = request.params.name;
 
     if (!name || !name.trim()) {
-      return { status: 400, jsonBody: { error: "A 'name' route parameter is required, e.g. /api/retrieve/ASB-Bank-Details" } };
+      return { status: 400, jsonBody: { error: "A 'name' route parameter is required, e.g. /api/items/ASB-Bank-Details" } };
     }
 
     let record;

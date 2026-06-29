@@ -4,9 +4,9 @@ const { encryptJson } = require("../lib/crypto");
 const { validateStorePayload } = require("../lib/validate");
 
 app.http("store", {
-  methods: ["POST"],
+  methods: ["PUT"],
   authLevel: "function",
-  route: "store",
+  route: "items",
   handler: async (request, context) => {
     let body;
     try {

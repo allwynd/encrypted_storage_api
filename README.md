@@ -1,14 +1,14 @@
 # Secure Vault Azure Function
 
-Node.js Azure Function app (v4 programming model) exposing two HTTP endpoints
-that store and retrieve sensitive JSON, encrypted at rest with **AES-256-GCM**,
+Node.js Azure Function app (v4 programming model) exposing REST-style HTTP endpoints
+that store, retrieve, and remove sensitive JSON, encrypted at rest with **AES-256-GCM**,
 in MongoDB.
 
 ## Endpoints
 
-### `POST /api/store`
+### `PUT /api/items`
 
-Stores (creates or updates) an encrypted record under a unique name.
+Creates or updates an encrypted record under a unique name.
 
 **Request body:**
 ```json
@@ -36,11 +36,24 @@ Stores (creates or updates) an encrypted record under a unique name.
 { "message": "Stored successfully.", "name": "ASB-Bank-Details" }
 ```
 
-### `GET /api/retrieve/{name}`
+### `DELETE /api/items/{name}`
+
+Deletes the encrypted record identified by the given name.
+
+**Example:** `DELETE /api/items/ASB-Bank-Details`
+
+**Response (200):**
+```json
+{ "message": "Deleted successfully.", "name": "ASB-Bank-Details" }
+```
+
+Returns `404` if the name doesn't exist.
+
+### `GET /api/items/{name}`
 
 Looks up the record by name, decrypts it, and returns the original JSON.
 
-**Example:** `GET /api/retrieve/ASB-Bank-Details`
+**Example:** `GET /api/items/ASB-Bank-Details`
 
 **Response (200):**
 ```json
@@ -109,11 +122,11 @@ secure-vault-function/
    ```bash
    npm start
    ```
-   This serves `http://localhost:7071/api/store` and `/api/retrieve/{key}`.
+   This serves `http://localhost:7071/api/items` and `/api/items/{name}`.
 
 5. **Test with curl:**
    ```bash
-   curl -X POST http://localhost:7071/api/store \
+   curl -X PUT http://localhost:7071/api/items \
      -H "Content-Type: application/json" \
      -d '{
            "name": "ASB-Bank-Details",
@@ -124,7 +137,7 @@ secure-vault-function/
            "secrets": [{"label":"Account Number","value":"12-3456-7890123-00"}]
          }'
 
-   curl http://localhost:7071/api/retrieve/ASB-Bank-Details
+   curl http://localhost:7071/api/items/ASB-Bank-Details
    ```
 
 ## Security recommendations for production

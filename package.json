@@ -1,7 +1,7 @@
 {
   "name": "secure-vault-function",
   "version": "1.0.0",
-  "description": "Azure Function app exposing /store and /retrieve endpoints. Encrypts JSON payloads with AES-256-GCM and persists them in MongoDB keyed by a unique identifier.",
+  "description": "Azure Function app exposing /items endpoints for PUT, GET, and DELETE operations. Encrypts JSON payloads with AES-256-GCM and persists them in MongoDB keyed by a unique identifier.",
   "main": "src/functions/*.js",
   "scripts": {
     "start": "func start",

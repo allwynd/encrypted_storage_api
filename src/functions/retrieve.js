@@ -4,6 +4,7 @@ const { decryptJson } = require("../lib/crypto");
 
 function buildItemResponse(record, decrypted) {
   return {
+    id: record._id ? record._id.toString() : null,
     name: record.name,
     category: record.category,
     ...decrypted,
@@ -50,25 +51,25 @@ app.http("retrieveAll", {
 app.http("retrieve", {
   methods: ["GET"],
   authLevel: "function",
-  route: "items/{name}",
+  route: "items/{id}",
   handler: async (request, context) => {
-    const name = request.params.name;
+    const id = request.params.id;
 
-    if (!name || !name.trim()) {
-      return { status: 400, jsonBody: { error: "A 'name' route parameter is required, e.g. /api/items/ASB-Bank-Details" } };
+    if (!id || !id.trim()) {
+      return { status: 400, jsonBody: { error: "An 'id' route parameter is required, e.g. /api/items/64c0c4d1e2b3f4a5b6c7d8e9" } };
     }
 
     let record;
     try {
       const collection = await getCollection();
-      record = await collection.findOne({ name });
+      record = await collection.findOne({ _id: require("mongodb").ObjectId.createFromHexString(id) });
     } catch (err) {
       context.error("MongoDB read failed:", err.message);
       return { status: 502, jsonBody: { error: "Failed to read data." } };
     }
 
     if (!record) {
-      return { status: 404, jsonBody: { error: `No item found for name '${name}'.` } };
+      return { status: 404, jsonBody: { error: `No item found for id '${id}'.` } };
     }
 
     let decrypted;

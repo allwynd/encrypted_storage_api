@@ -28,6 +28,7 @@ test("store payload validation requires name and category", () => {
 
 test("buildItemResponse returns a normalized payload for a single record", () => {
   const payload = buildItemResponse({
+    _id: { toString: () => "64c0c4d1e2b3f4a5b6c7d8e9" },
     name: "ASB-Bank-Details",
     category: "Bank",
     createdAt: "2024-01-01T00:00:00.000Z",
@@ -35,6 +36,7 @@ test("buildItemResponse returns a normalized payload for a single record", () =>
     data: "encrypted-payload",
   }, { email: "user@example.com" });
 
+  assert.equal(payload.id, "64c0c4d1e2b3f4a5b6c7d8e9");
   assert.equal(payload.name, "ASB-Bank-Details");
   assert.equal(payload.category, "Bank");
   assert.equal(payload.email, "user@example.com");

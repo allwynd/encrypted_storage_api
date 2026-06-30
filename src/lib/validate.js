@@ -29,16 +29,16 @@ function validateStorePayload(body) {
     errors.push("'category' is required and must be a non-empty string (e.g. 'Bank').");
   }
 
-  if (!body.email || typeof body.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
-    errors.push("'email' is required and must be a valid email address.");
-  }
-
-  if (!body.password || typeof body.password !== "string") {
-    errors.push("'password' is required and must be a string.");
-  }
-
-  if (body.pin !== undefined && body.pin !== null && typeof body.pin !== "string") {
-    errors.push("'pin' is optional but must be a string when provided.");
+  // only validate email is in correct format if it is provided
+  if (body.email !== undefined) {
+    if (typeof body.email !== "string" || !body.email.trim()) {
+      errors.push("'email' must be a non-empty string when provided.");
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(body.email)) {
+        errors.push("'email' must be a valid email address when provided.");
+      }
+    }
   }
 
   if (body.secrets !== undefined) {

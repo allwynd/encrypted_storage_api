@@ -38,25 +38,18 @@ app.http("store", {
       return { status: 500, jsonBody: { error: "Server encryption configuration error." } };
     }
 
+    let result;
     try {
       const collection = await getCollection();
       const now = new Date();
 
-      await collection.updateOne(
-        { name },
-        {
-          $set: {
-            name,
-            category,
-            data: encrypted,
-            updatedAt: now,
-          },
-          $setOnInsert: {
-            createdAt: now,
-          },
-        },
-        { upsert: true }
-      );
+      result = await collection.insertOne({
+        name,
+        category,
+        data: encrypted,
+        createdAt: now,
+        updatedAt: now,
+      });
     } catch (err) {
       context.error("MongoDB write failed:", err.message);
       return { status: 502, jsonBody: { error: "Failed to persist data." } };
@@ -66,6 +59,7 @@ app.http("store", {
       status: 200,
       jsonBody: {
         message: "Stored successfully.",
+        id: result.insertedId.toString(),
         name,
       },
     };
